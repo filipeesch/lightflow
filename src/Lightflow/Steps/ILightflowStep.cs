@@ -6,6 +6,9 @@
 
     public interface ILightflowStep
     {
+        Type InputType { get; }
+
+        Type OutputType { get; }
     }
 
     public interface ILightflowStep<in TContext, in TInput, out TOutput> : ILightflowStep

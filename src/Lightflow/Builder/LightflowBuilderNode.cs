@@ -8,27 +8,32 @@
 
     public class LightflowBuilderNode<TLightflowInput, TStepInput, TContext> where TContext : ILightflowContext, new()
     {
-        private readonly List<LightflowStepInfo> steps;
+        private readonly List<LightflowStepBaseInvoker> steps;
 
-        public LightflowBuilderNode(List<LightflowStepInfo> filters)
+        internal LightflowBuilderNode(List<LightflowStepBaseInvoker> filters)
         {
             this.steps = filters;
         }
 
         public LightflowBuilderNode<TLightflowInput, TOutput, TContext> Use<TOutput>(LightflowHandler<TContext, TStepInput, TOutput> handler)
         {
-            this.steps.Add(new LightflowStepInfo(
-                () => new HandlerLightflowStep<TContext, TStepInput, TOutput>(handler),
-                typeof(TContext),
-                typeof(TStepInput),
-                typeof(TOutput)));
+            this.steps.Add(new LightflowStepInstanceInvoker(
+                new HandlerLightflowStep<TContext, TStepInput, TOutput>(handler),
+                typeof(TContext)));
+
+            return new LightflowBuilderNode<TLightflowInput, TOutput, TContext>(this.steps);
+        }
+
+        public LightflowBuilderNode<TLightflowInput, TOutput, TContext> Use<TOutput>(ILightflowStep<TContext, TStepInput, TOutput> step)
+        {
+            this.steps.Add(new LightflowStepInstanceInvoker(step, typeof(TContext)));
 
             return new LightflowBuilderNode<TLightflowInput, TOutput, TContext>(this.steps);
         }
 
         public LightflowBuilderNode<TLightflowInput, TOutput, TContext> Use<TOutput>(Func<ILightflowStep<TContext, TStepInput, TOutput>> factory)
         {
-            this.steps.Add(new LightflowStepInfo(
+            this.steps.Add(new LightflowStepFactoryInvoker(
                 factory,
                 typeof(TContext),
                 typeof(TStepInput),

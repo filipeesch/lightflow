@@ -14,6 +14,10 @@
             this.semaphore = semaphore;
         }
 
+        public Type InputType => typeof(T);
+
+        public Type OutputType => typeof(T);
+
         public async Task Invoke(ILightflowContext context, T input, Func<T, Task> next)
         {
             await this.semaphore.WaitAsync().ConfigureAwait(false);

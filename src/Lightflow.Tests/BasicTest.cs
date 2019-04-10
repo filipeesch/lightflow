@@ -1,8 +1,10 @@
 namespace Lightflow.Tests
 {
+    using System;
     using System.Threading.Tasks;
     using Lightflow.Builder;
     using Lightflow.Contexts;
+    using Lightflow.Steps;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
@@ -24,6 +26,7 @@ namespace Lightflow.Tests
             var flow = builder
                 .Use<int>((context, input, next) => next(input * 2))
                 .Use<int>((context, input, next) => next(input * 2))
+                .Use(new FakeStep())
                 .Use<int>((context, input, next) =>
                 {
                     context.Output = input;
@@ -35,7 +38,18 @@ namespace Lightflow.Tests
             var result = await flow.Execute(flowInput);
 
             // Assert
-            Assert.AreEqual(20, result.Output);
+            Assert.AreEqual(40, result.Output);
+        }
+
+        internal class FakeStep : ILightflowStep<int, int>
+        {
+            public Task Invoke(ILightflowContext context, int input, Func<int, Task> next)
+            {
+                return next(input * 2);
+            }
+
+            public Type InputType => typeof(int);
+            public Type OutputType => typeof(int);
         }
     }
 }

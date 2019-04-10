@@ -13,55 +13,55 @@
         private static readonly MethodInfo ExecuteStepMethodInfo =
             typeof(Lightflow<TInput, TContext>).GetMethod(nameof(ExecuteStep), BindingFlags.NonPublic | BindingFlags.Instance);
 
-        private readonly List<LightflowStepInfo> infos;
+        private readonly List<LightflowStepBaseInvoker> invokers;
         private readonly TContext context = new TContext();
 
-        private readonly Dictionary<LightflowStepInfo, Delegate> compilationCache =
-            new Dictionary<LightflowStepInfo, Delegate>();
+        private readonly Dictionary<LightflowStepBaseInvoker, Delegate> compilationCache =
+            new Dictionary<LightflowStepBaseInvoker, Delegate>();
 
-        public Lightflow(List<LightflowStepInfo> steps)
+        public Lightflow(List<LightflowStepBaseInvoker> invokers)
         {
-            this.infos = steps;
+            this.invokers = invokers;
 
-            this.CompileHandlers();
+            this.CompileInvokers();
         }
 
-        private void CompileHandlers()
+        private void CompileInvokers()
         {
-            var info = this.infos.GetEnumerator();
+            var invoker = this.invokers.GetEnumerator();
 
-            while (info.MoveNext())
+            while (invoker.MoveNext())
             {
-                this.compilationCache.Add(info.Current, this.CompileHandler(info));
+                this.compilationCache.Add(invoker.Current, this.CompileInvoker(invoker));
             }
         }
 
         public async Task<TContext> Execute(TInput input)
         {
-            await this.ExecuteStep(this.infos.GetEnumerator(), input);
+            await this.ExecuteStep(this.invokers.GetEnumerator(), input);
 
             return this.context;
         }
 
-        private Task ExecuteStep(List<LightflowStepInfo>.Enumerator info, object input)
+        private Task ExecuteStep(List<LightflowStepBaseInvoker>.Enumerator invoker, object input)
         {
-            if (!info.MoveNext())
+            if (!invoker.MoveNext())
                 return Task.CompletedTask;
 
-            var handler = this.compilationCache[info.Current];
+            var handler = this.compilationCache[invoker.Current];
 
-            return info.Current.InvokeStep(this.context, input, handler);
+            return invoker.Current.InvokeStep(this.context, input, handler);
         }
 
-        private Delegate CompileHandler(IEnumerator<LightflowStepInfo> info)
+        private Delegate CompileInvoker(IEnumerator<LightflowStepBaseInvoker> invoker)
         {
-            var outParam = Expression.Parameter(info.Current.OutputType, "output");
+            var outParam = Expression.Parameter(invoker.Current.OutputType, "output");
 
             var lambda = Expression.Lambda(
                 Expression.Call(
                     Expression.Constant(this),
                     ExecuteStepMethodInfo,
-                    Expression.Constant(info),
+                    Expression.Constant(invoker),
                     Expression.Convert(
                         outParam,
                         typeof(object))),

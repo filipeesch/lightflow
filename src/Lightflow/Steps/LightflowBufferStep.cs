@@ -23,6 +23,10 @@ namespace Lightflow.Steps
             this.channel = Channel.CreateUnbounded<Func<Task>>();
         }
 
+        public Type InputType => typeof(T);
+
+        public Type OutputType => typeof(T);
+
         public async Task Invoke(ILightflowContext context, T input, Func<T, Task> next)
         {
             while (!this.channel.Writer.TryWrite(() => next(input)))

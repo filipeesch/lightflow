@@ -13,6 +13,10 @@
             this.handler = handler;
         }
 
+        public Type InputType => typeof(TInput);
+
+        public Type OutputType => typeof(TOutput);
+
         public Task Invoke(TContext context, TInput input, Func<TOutput, Task> next)
         {
             return this.handler(context, input, next);

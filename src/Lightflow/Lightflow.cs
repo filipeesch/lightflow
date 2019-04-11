@@ -36,11 +36,11 @@
             }
         }
 
-        public async Task<TContext> Execute(TInput input)
+        public Task<TContext> Execute(TInput input)
         {
-            await this.ExecuteStep(this.invokers.GetEnumerator(), input);
-
-            return this.context;
+            return this
+                .ExecuteStep(this.invokers.GetEnumerator(), input)
+                .ContinueWith(x => this.context);
         }
 
         private Task ExecuteStep(List<LightflowStepBaseInvoker>.Enumerator invoker, object input)

@@ -1,8 +1,6 @@
 ﻿namespace Lightflow.Core
 {
     using System;
-    using System.Threading.Tasks;
-    using Lightflow.Contexts;
     using Lightflow.Steps;
 
     public class LightflowStepFactoryInvoker : LightflowStepBaseInvoker
@@ -19,11 +17,6 @@
             this.factory = factory;
         }
 
-        public override Task InvokeStep(ILightflowContext context, object input, Delegate next)
-        {
-            var step = this.factory();
-
-            return (Task)this.InvokeMethod.Invoke(step, new[] { context, input, next });
-        }
+        protected override ILightflowStep GetStepinstance() => this.factory();
     }
 }

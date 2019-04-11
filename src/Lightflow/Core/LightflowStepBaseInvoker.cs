@@ -28,6 +28,13 @@
                     .GetMethod(nameof(ILightflowStep<int, int, int>.Invoke));
         }
 
-        public abstract Task InvokeStep(ILightflowContext context, object input, Delegate next);
+        protected abstract ILightflowStep GetStepinstance();
+
+        public Task InvokeStep(ILightflowContext context, object input, Delegate next)
+        {
+            var step = this.GetStepinstance();
+
+            return (Task)this.InvokeMethod.Invoke(step, new[] { context, input, next });
+        }
     }
 }

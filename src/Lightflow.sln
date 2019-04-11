@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lightflow.Tests", "Lightflo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lightflow", "Lightflow\Lightflow.csproj", "{88FAAA34-BAB8-4A7B-9B9F-A3CA7DFED04B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lightflow.ConsoleTest", "Lightflow.ConsoleTest\Lightflow.ConsoleTest.csproj", "{649297F9-BA6C-49CA-B115-9CB92629FFF9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{88FAAA34-BAB8-4A7B-9B9F-A3CA7DFED04B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88FAAA34-BAB8-4A7B-9B9F-A3CA7DFED04B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88FAAA34-BAB8-4A7B-9B9F-A3CA7DFED04B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{649297F9-BA6C-49CA-B115-9CB92629FFF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{649297F9-BA6C-49CA-B115-9CB92629FFF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{649297F9-BA6C-49CA-B115-9CB92629FFF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{649297F9-BA6C-49CA-B115-9CB92629FFF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

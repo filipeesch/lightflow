@@ -49,7 +49,7 @@ namespace Lightflow.Steps
                 if (this.eventLoopIsRunning)
                     return;
 
-                Task.Run(async () =>
+                Task.Factory.StartNew(async () =>
                     {
                         while (
                             !this.cancellationTokenSource.IsCancellationRequested &&
@@ -61,7 +61,9 @@ namespace Lightflow.Steps
                                 await item().ConfigureAwait(false);
                         }
                     },
-                    this.cancellationTokenSource.Token);
+                    this.cancellationTokenSource.Token,
+                    TaskCreationOptions.LongRunning,
+                    TaskScheduler.Default);
 
                 this.eventLoopIsRunning = true;
             }
